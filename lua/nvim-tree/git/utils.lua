@@ -6,7 +6,13 @@ local has_cygpath = vim.fn.executable "cygpath" == 1
 function M.get_toplevel(cwd)
   local profile = log.profile_start("git toplevel %s", cwd)
 
-  local cmd = { "git", "-C", cwd, "rev-parse", "--show-toplevel" }
+  local user_opt = {
+    git_dir = vim.fn.expand('~/example/sample-bare'),
+    work_tree = vim.fn.expand('~/example/nested/dir/ect/ory/work/')
+  }
+  local cmd = { "git", 
+    "--git-dir", user_opt.git_dir, "--work-tree", user_opt.work_tree,
+    "-C", cwd, "rev-parse", "--show-toplevel" }
   log.line("git", "%s", vim.inspect(cmd))
 
   local toplevel = vim.fn.system(cmd)
